@@ -20,6 +20,8 @@ public class Customer implements Serializable {
 
     private String newAddress;
 
+    // private String month;
+
     public int getCustomerId() {
         return customerId;
     }

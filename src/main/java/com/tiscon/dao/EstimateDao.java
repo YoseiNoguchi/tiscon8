@@ -147,4 +147,11 @@ public class EstimateDao {
         SqlParameterSource paramSource = new MapSqlParameterSource("serviceId", serviceId);
         return parameterJdbcTemplate.queryForObject(sql, paramSource, Integer.class);
     }
+
+    public int getTruckMaxbox(){
+        String sql = "SELECT MAX_BOX FROM TRUCK_CAPACITY ORDER BY MAX_BOX DESC LIMIT 1";
+
+        SqlParameterSource paramSource = new MapSqlParameterSource();
+        return parameterJdbcTemplate.queryForObject(sql, paramSource, Integer.class);
+    }
 }

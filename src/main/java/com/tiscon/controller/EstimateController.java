@@ -80,6 +80,7 @@ public class EstimateController {
 
         model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
         model.addAttribute("userOrderForm", userOrderForm);
+        System.out.println("aa");
         if (result.hasErrors()) {
 
             model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
@@ -170,4 +171,27 @@ public class EstimateController {
         return "complete";
     }
 
+    /**
+     * お問い合わせ画面に遷移する。
+     *
+     * @param userOrderForm 顧客が入力した見積もり依頼情報
+     * @param result        精査結果
+     * @param model         遷移先に連携するデータ
+     * @return 遷移先
+     */
+    @GetMapping(value = "contact")
+    String contat(@Validated UserOrderForm userOrderForm, BindingResult result, Model model) {
+        // if (result.hasErrors()) {
+
+        //     model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
+        //     model.addAttribute("userOrderForm", userOrderForm);
+        //     return "confirm";
+        // }
+
+        // UserOrderDto dto = new UserOrderDto();
+        // BeanUtils.copyProperties(userOrderForm, dto);
+        // estimateService.registerOrder(dto);
+
+        return "contact";
+    }
 }

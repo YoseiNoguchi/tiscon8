@@ -71,9 +71,10 @@ public class EstimateService {
      */
     public Integer getPrice(UserOrderDto dto) {
         double distance = estimateDAO.getDistance(dto.getOldPrefectureId(), dto.getNewPrefectureId());
+        System.out.println(distance);
         // 小数点以下を切り捨てる
         int distanceInt = (int) Math.floor(distance);
-
+        System.out.println(distanceInt);
         // 距離当たりの料金を算出する
         int priceForDistance = distanceInt * PRICE_PER_DISTANCE;
 
@@ -81,18 +82,36 @@ public class EstimateService {
                 + getBoxForPackage(dto.getBed(), PackageType.BED)
                 + getBoxForPackage(dto.getBicycle(), PackageType.BICYCLE)
                 + getBoxForPackage(dto.getWashingMachine(), PackageType.WASHING_MACHINE);
-
+        System.out.println(boxes);
         // 箱に応じてトラックの種類が変わり、それに応じて料金が変わるためトラック料金を算出する。
-        int pricePerTruck = estimateDAO.getPricePerTruck(boxes);
-
+        int MAXbox=estimateDAO.getTruckMaxbox();
+        int boxesquotient =boxes / MAXbox;
+        int boxesremainder = boxes % MAXbox;
+        int pricePerTruck =  boxesquotient* estimateDAO.getPricePerTruck(MAXbox);
+        if (boxesremainder!=0){
+            pricePerTruck = pricePerTruck + estimateDAO.getPricePerTruck(boxesremainder);
+        }
+        System.out.println(pricePerTruck);
         // オプションサービスの料金を算出する。
         int priceForOptionalService = 0;
+
+        int month = dto.getMonth();
+        double seasonNumber = 0;
+        if (month == 3 || month == 4) {
+            seasonNumber = 1.5;
+        } else if (month == 9) {
+            seasonNumber = 1.2;
+        } else {
+            seasonNumber = 1;
+        };
 
         if (dto.getWashingMachineInstallation()) {
             priceForOptionalService = estimateDAO.getPricePerOptionalService(OptionalServiceType.WASHING_MACHINE.getCode());
         }
+        System.out.println(priceForOptionalService);
 
-        return priceForDistance + pricePerTruck + priceForOptionalService;
+        int price = (int)((priceForDistance + pricePerTruck) * seasonNumber + priceForOptionalService);
+        return price;
     }
 
     /**
